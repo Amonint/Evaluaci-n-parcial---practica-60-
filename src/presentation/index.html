@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Trazabilidad Agrícola</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- TODO: Para producción, instalar Tailwind CSS localmente: npm install -D tailwindcss postcss autoprefixer -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <!-- Barra lateral de navegación -->
+    <nav class="fixed top-0 left-0 h-full w-64 bg-green-800 text-white shadow-lg z-50">
+        <div class="p-6 border-b border-green-700">
+            <h1 class="text-xl font-bold flex items-center">
+                <i class="fas fa-leaf mr-3"></i>
+                Trazabilidad
+            </h1>
+        </div>
+
+        <div class="py-4">
+            <a href="#" class="nav-link block px-6 py-3 hover:bg-green-700 transition-colors" data-section="dashboard">
+                <i class="fas fa-tachometer-alt mr-3"></i>Dashboard
+            </a>
+
+            <div class="px-6 py-2 text-xs uppercase text-green-300 font-semibold">Gestión</div>
+
+            <a href="#" class="nav-link block px-6 py-3 hover:bg-green-700 transition-colors" data-section="materia-prima">
+                <i class="fas fa-box mr-3"></i>Materia Prima
+            </a>
+
+            <a href="#" class="nav-link block px-6 py-3 hover:bg-green-700 transition-colors" data-section="insumos">
+                <i class="fas fa-flask mr-3"></i>Insumos
+            </a>
+
+            <a href="#" class="nav-link block px-6 py-3 hover:bg-green-700 transition-colors" data-section="produccion">
+                <i class="fas fa-cogs mr-3"></i>Producción
+            </a>
+
+            <a href="#" class="nav-link block px-6 py-3 hover:bg-green-700 transition-colors" data-section="producto-final">
+                <i class="fas fa-box-open mr-3"></i>Producto Final
+            </a>
+
+            <a href="#" class="nav-link block px-6 py-3 hover:bg-green-700 transition-colors" data-section="stock">
+                <i class="fas fa-warehouse mr-3"></i>Stock
+            </a>
+
+            <div class="px-6 py-2 text-xs uppercase text-green-300 font-semibold">Consultas</div>
+
+            <a href="#" class="nav-link block px-6 py-3 hover:bg-green-700 transition-colors" data-section="trazabilidad">
+                <i class="fas fa-search mr-3"></i>Trazabilidad
+            </a>
+
+            <a href="#" class="nav-link block px-6 py-3 hover:bg-green-700 transition-colors" data-section="reportes">
+                <i class="fas fa-chart-bar mr-3"></i>Reportes
+            </a>
+        </div>
+    </nav>
+
+    <!-- Contenido principal -->
+    <div class="ml-64 min-h-screen">
+        <!-- Header -->
+        <header class="bg-white shadow-sm border-b">
+            <div class="px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 id="page-title" class="text-2xl font-bold text-gray-800">Dashboard</h2>
+                        <p id="page-subtitle" class="text-gray-600">Panel de control general</p>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <button id="btn-refresh" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">
+                            <i class="fas fa-sync-alt mr-2"></i>Actualizar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Contenido dinámico -->
+        <main class="p-6">
+            <!-- Dashboard -->
+            <div id="section-dashboard" class="section-content">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center">
+                            <div class="p-3 bg-green-100 rounded-full">
+                                <i class="fas fa-box text-green-600 text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm text-gray-600">Materia Prima</p>
+                                <p id="count-materia-prima" class="text-2xl font-bold text-gray-800">0</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center">
+                            <div class="p-3 bg-blue-100 rounded-full">
+                                <i class="fas fa-flask text-blue-600 text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm text-gray-600">Insumos</p>
+                                <p id="count-insumos" class="text-2xl font-bold text-gray-800">0</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center">
+                            <div class="p-3 bg-purple-100 rounded-full">
+                                <i class="fas fa-cogs text-purple-600 text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm text-gray-600">Producciones</p>
+                                <p id="count-produccion" class="text-2xl font-bold text-gray-800">0</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center">
+                            <div class="p-3 bg-orange-100 rounded-full">
+                                <i class="fas fa-box-open text-orange-600 text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm text-gray-600">Productos Finales</p>
+                                <p id="count-producto-final" class="text-2xl font-bold text-gray-800">0</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actividad reciente -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h3 class="text-lg font-semibold mb-4">Actividad Reciente</h3>
+                    <div id="actividad-reciente" class="space-y-3">
+                        <p class="text-gray-500 text-center py-8">Cargando actividad...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Materia Prima -->
+            <div id="section-materia-prima" class="section-content hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-bold">Gestión de Materia Prima</h3>
+                    <button id="btn-nueva-materia-prima" class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700">
+                        <i class="fas fa-plus mr-2"></i>Nueva Materia Prima
+                    </button>
+                </div>
+
+                <!-- Filtros -->
+                <div class="bg-white rounded-lg shadow p-6 mb-6">
+                    <h4 class="font-semibold mb-4">Filtros de Búsqueda</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <input type="text" id="filtro-mp-nombre" placeholder="Nombre" class="px-3 py-2 border rounded-md">
+                        <input type="text" id="filtro-mp-marca" placeholder="Marca" class="px-3 py-2 border rounded-md">
+                        <input type="text" id="filtro-mp-lote" placeholder="Lote" class="px-3 py-2 border rounded-md">
+                        <button id="btn-filtrar-mp" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+                            <i class="fas fa-search mr-2"></i>Filtrar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tabla -->
+                <div class="bg-white rounded-lg shadow overflow-hidden">
+                    <table id="tabla-materia-prima" class="w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-4 py-3 text-left">ID</th>
+                                <th class="px-4 py-3 text-left">Nombre</th>
+                                <th class="px-4 py-3 text-left">Marca</th>
+                                <th class="px-4 py-3 text-left">Lote</th>
+                                <th class="px-4 py-3 text-left">Proveedor</th>
+                                <th class="px-4 py-3 text-left">Fecha Ingreso</th>
+                                <th class="px-4 py-3 text-left">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-materia-prima">
+                            <!-- Datos se cargan dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Insumos -->
+            <div id="section-insumos" class="section-content hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-bold">Gestión de Insumos</h3>
+                    <button id="btn-nuevo-insumo" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+                        <i class="fas fa-plus mr-2"></i>Nuevo Insumo
+                    </button>
+                </div>
+
+                <!-- Filtros -->
+                <div class="bg-white rounded-lg shadow p-6 mb-6">
+                    <h4 class="font-semibold mb-4">Filtros de Búsqueda</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <input type="text" id="filtro-insumo-nombre" placeholder="Nombre" class="px-3 py-2 border rounded-md">
+                        <input type="text" id="filtro-insumo-tipo" placeholder="Tipo" class="px-3 py-2 border rounded-md">
+                        <button id="btn-filtrar-insumo" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+                            <i class="fas fa-search mr-2"></i>Filtrar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tabla -->
+                <div class="bg-white rounded-lg shadow overflow-hidden">
+                    <table id="tabla-insumos" class="w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-4 py-3 text-left">ID</th>
+                                <th class="px-4 py-3 text-left">Nombre</th>
+                                <th class="px-4 py-3 text-left">Tipo</th>
+                                <th class="px-4 py-3 text-left">Cantidad</th>
+                                <th class="px-4 py-3 text-left">Proveedor</th>
+                                <th class="px-4 py-3 text-left">Fecha Ingreso</th>
+                                <th class="px-4 py-3 text-left">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-insumos">
+                            <!-- Datos se cargan dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Producción -->
+            <div id="section-produccion" class="section-content hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-bold">Gestión de Producción</h3>
+                    <button id="btn-nueva-produccion" class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700">
+                        <i class="fas fa-plus mr-2"></i>Nueva Producción
+                    </button>
+                </div>
+
+                <!-- Filtros -->
+                <div class="bg-white rounded-lg shadow p-6 mb-6">
+                    <h4 class="font-semibold mb-4">Filtros de Búsqueda</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <input type="text" id="filtro-prod-lote" placeholder="Lote de Producción" class="px-3 py-2 border rounded-md">
+                        <input type="date" id="filtro-prod-fecha-desde" class="px-3 py-2 border rounded-md">
+                        <button id="btn-filtrar-produccion" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+                            <i class="fas fa-search mr-2"></i>Filtrar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tabla -->
+                <div class="bg-white rounded-lg shadow overflow-hidden">
+                    <table id="tabla-produccion" class="w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-4 py-3 text-left">ID</th>
+                                <th class="px-4 py-3 text-left">Lote Producción</th>
+                                <th class="px-4 py-3 text-left">Fecha Producción</th>
+                                <th class="px-4 py-3 text-left">Cantidad Producida</th>
+                                <th class="px-4 py-3 text-left">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-produccion">
+                            <!-- Datos se cargan dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Producto Final -->
+            <div id="section-producto-final" class="section-content hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-bold">Gestión de Productos Finales</h3>
+                    <button id="btn-nuevo-producto-final" class="bg-orange-600 text-white px-4 py-2 rounded-md hover:bg-orange-700">
+                        <i class="fas fa-plus mr-2"></i>Nuevo Producto Final
+                    </button>
+                </div>
+
+                <!-- Filtros -->
+                <div class="bg-white rounded-lg shadow p-6 mb-6">
+                    <h4 class="font-semibold mb-4">Filtros de Búsqueda</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <input type="text" id="filtro-pf-nombre" placeholder="Nombre" class="px-3 py-2 border rounded-md">
+                        <input type="text" id="filtro-pf-lote" placeholder="Lote" class="px-3 py-2 border rounded-md">
+                        <button id="btn-filtrar-producto-final" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+                            <i class="fas fa-search mr-2"></i>Filtrar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tabla -->
+                <div class="bg-white rounded-lg shadow overflow-hidden">
+                    <table id="tabla-producto-final" class="w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-4 py-3 text-left">ID</th>
+                                <th class="px-4 py-3 text-left">Nombre</th>
+                                <th class="px-4 py-3 text-left">Lote</th>
+                                <th class="px-4 py-3 text-left">Fecha Fabricación</th>
+                                <th class="px-4 py-3 text-left">Cantidad</th>
+                                <th class="px-4 py-3 text-left">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-producto-final">
+                            <!-- Datos se cargan dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Stock -->
+            <div id="section-stock" class="section-content hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-bold">Gestión de Stock</h3>
+                </div>
+
+                <!-- Tabla de Stock -->
+                <div class="bg-white rounded-lg shadow overflow-hidden">
+                    <table id="tabla-stock" class="w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-4 py-3 text-left">Tipo</th>
+                                <th class="px-4 py-3 text-left">Nombre</th>
+                                <th class="px-4 py-3 text-left">Lote</th>
+                                <th class="px-4 py-3 text-left">Cantidad Disponible</th>
+                                <th class="px-4 py-3 text-left">Ubicación</th>
+                                <th class="px-4 py-3 text-left">Última Actualización</th>
+                                <th class="px-4 py-3 text-left">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-stock">
+                            <!-- Datos se cargan dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Trazabilidad -->
+            <div id="section-trazabilidad" class="section-content hidden">
+                <div class="mb-6">
+                    <h3 class="text-xl font-bold mb-4">Consulta de Trazabilidad</h3>
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex space-x-4">
+                            <input type="text" id="input-lote-trazabilidad" placeholder="Ingrese un lote para buscar trazabilidad"
+                                   class="flex-1 px-3 py-2 border rounded-md">
+                            <button id="btn-buscar-trazabilidad" class="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700">
+                                <i class="fas fa-search mr-2"></i>Buscar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="resultado-trazabilidad" class="bg-white rounded-lg shadow p-6 hidden">
+                    <!-- Resultados de trazabilidad se muestran aquí -->
+                </div>
+            </div>
+
+            <!-- Reportes -->
+            <div id="section-reportes" class="section-content hidden">
+                <div class="mb-6">
+                    <h3 class="text-xl font-bold mb-4">Generación de Reportes</h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-white rounded-lg shadow p-6">
+                            <h4 class="font-semibold mb-4">Reporte de Trazabilidad</h4>
+                            <div class="space-y-3">
+                                <input type="text" id="reporte-lote" placeholder="Lote específico" class="w-full px-3 py-2 border rounded-md">
+                                <button id="btn-generar-reporte-trazabilidad" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700">
+                                    <i class="fas fa-file-pdf mr-2"></i>Generar Reporte PDF
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-lg shadow p-6">
+                            <h4 class="font-semibold mb-4">Reporte General</h4>
+                            <div class="space-y-3">
+                                <select id="tipo-reporte" class="w-full px-3 py-2 border rounded-md">
+                                    <option value="materia_prima">Materia Prima</option>
+                                    <option value="insumos">Insumos</option>
+                                    <option value="produccion">Producción</option>
+                                    <option value="producto_final">Producto Final</option>
+                                    <option value="stock">Stock</option>
+                                </select>
+                                <button id="btn-generar-reporte-general" class="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700">
+                                    <i class="fas fa-file-excel mr-2"></i>Generar Reporte CSV
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modales para formularios -->
+    <div id="modal-overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+        <div id="modal-content" class="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-screen overflow-y-auto">
+            <!-- Contenido del modal se carga dinámicamente -->
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
